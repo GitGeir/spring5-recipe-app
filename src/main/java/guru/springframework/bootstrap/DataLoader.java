@@ -1,7 +1,9 @@
 package guru.springframework.bootstrap;
 
 import guru.springframework.domain.*;
-import guru.springframework.repositories.*;
+import guru.springframework.repositories.CategoryRepository;
+import guru.springframework.repositories.RecipeRepository;
+import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -15,16 +17,16 @@ public class DataLoader implements CommandLineRunner {
 
     private final RecipeRepository recipeRepository;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
-    private final IngredientRepository ingredientRepository;
+    //private final IngredientRepository ingredientRepository;
     private final CategoryRepository categoryRepository;
-    private final NotesRepository notesRepository;
+    //private final NotesRepository notesRepository;
 
-    public DataLoader(RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository, IngredientRepository ingredientRepository, CategoryRepository categoryRepository, NotesRepository notesRepository) {
+    public DataLoader(RecipeRepository recipeRepository, UnitOfMeasureRepository unitOfMeasureRepository, CategoryRepository categoryRepository) {
         this.recipeRepository = recipeRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
-        this.ingredientRepository = ingredientRepository;
+        //this.ingredientRepository = ingredientRepository;
         this.categoryRepository = categoryRepository;
-        this.notesRepository = notesRepository;
+        //this.notesRepository = notesRepository;
     }
 
     @Override
@@ -35,9 +37,6 @@ public class DataLoader implements CommandLineRunner {
 
     private void loadData() {
         Recipe recipe1 = new Recipe();
-        Notes notes = new Notes();
-        notes.setRecipeNotes("Be careful handling chiles if using. Wash your hands thoroughly after handling and do not touch your eyes or the area near your eyes with your hands for several hours.");
-
         recipe1.setCookTime(20);
         recipe1.setDescription("Perfect Guacamole");
         recipe1.setDifficulty(Difficulty.EASY);
@@ -47,11 +46,13 @@ public class DataLoader implements CommandLineRunner {
         recipe1.setSource("Simply recipes");
         recipe1.setUrl("https://www.simplyrecipes.com/recipes/perfect_guacamole/");
 
-        recipe1.setNotes(notes);
-        recipeRepository.save(recipe1);
-
+        Notes notes = new Notes();
+        notes.setRecipeNotes("Be careful handling chiles if using. Wash your hands thoroughly after handling and do not touch your eyes or the area near your eyes with your hands for several hours.");
         notes.setRecipe(recipe1);
-        notesRepository.save(notes);
+        recipe1.setNotes(notes);
+        //recipeRepository.save(recipe1);
+
+       // notesRepository.save(notes);
 
         Set<Ingredient> ingredients = new HashSet<Ingredient>();
         Ingredient ingredient1 = new Ingredient();
@@ -60,7 +61,7 @@ public class DataLoader implements CommandLineRunner {
         Optional<UnitOfMeasure> unitOfMeasureOptional = unitOfMeasureRepository.findByDescription("Ripe");
         ingredient1.setUom(unitOfMeasureOptional.get());
         ingredient1.setRecipe(recipe1);
-        ingredientRepository.save(ingredient1);
+        //ingredientRepository.save(ingredient1);
         ingredients.add(ingredient1);
 
         Ingredient ingredient2 = new Ingredient();
@@ -69,10 +70,11 @@ public class DataLoader implements CommandLineRunner {
         unitOfMeasureOptional = unitOfMeasureRepository.findByDescription("Teaspoon");
         ingredient2.setUom(unitOfMeasureOptional.get());
         ingredient2.setRecipe(recipe1);
-        ingredientRepository.save(ingredient2);
+        //ingredientRepository.save(ingredient2);
         ingredients.add(ingredient2);
         recipe1.setIngredients(ingredients);
 
+        recipeRepository.save(recipe1);
 
         Set<Category> categorySet = new HashSet<Category>();
         Optional<Category> categoryOptional = categoryRepository.findByDescription("Mexican");
